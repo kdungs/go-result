@@ -17,11 +17,3 @@ func Apply[A any, B any](f func(A) B, err error) func(A, error) (B, error) {
 		return f(a), nil
 	}
 }
-
-// EagerApply is the uncurried, eager version of `Apply`.
-// This exist because it (can be optimized to) avoid(s) an extra func.
-// TODO(kdungs): Check whether the compiler actually elides the extra func.
-// This is a bit useless since we cannot call it direcly with the result of a function...
-func EagerApply[A any, B any](f func(A) B, errF error, a A, errA error) (B, error) {
-	return Apply(f, errF)(a, errA)
-}

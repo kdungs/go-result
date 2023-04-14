@@ -11,22 +11,6 @@ import (
 func TestApply(t *testing.T) {
 	errF := errors.New("f")
 	errV := errors.New("v")
-
-	suites := []struct {
-		name string
-		f    func(func(int) string, error, int, error) (string, error)
-	}{
-		{
-			name: "Apply",
-			f: func(f func(int) string, errF error, v int, errV error) (string, error) {
-				return baresult.Apply(f, errF)(v, errV)
-			},
-		},
-		{
-			name: "EagerApply",
-			f:    baresult.EagerApply[int, string],
-		},
-	}
 	cases := []struct {
 		name        string
 		f           func(int) string
@@ -62,20 +46,15 @@ func TestApply(t *testing.T) {
 			expectedVal: "42",
 		},
 	}
-	for _, ts := range suites {
-		ts := ts
-		t.Run(ts.name, func(t *testing.T) {
-			for _, tc := range cases {
-				tc := tc
-				t.Run(tc.name, func(t *testing.T) {
-					v, err := ts.f(tc.f, tc.errF, tc.v, tc.errV)
-					if err != tc.expectedErr {
-						t.Fatalf("want %v, got %v", tc.expectedErr, err)
-					}
-					if tc.expectedErr == nil && v != tc.expectedVal {
-						t.Fatalf("want %q, got %q", tc.expectedVal, v)
-					}
-				})
+	for _, tc := range cases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			v, err := baresult.Apply(tc.f, tc.errF)(tc.v, tc.errV)
+			if err != tc.expectedErr {
+				t.Fatalf("want %v, got %v", tc.expectedErr, err)
+			}
+			if tc.expectedErr == nil && v != tc.expectedVal {
+				t.Fatalf("want %q, got %q", tc.expectedVal, v)
 			}
 		})
 	}

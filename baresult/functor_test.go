@@ -9,61 +9,35 @@ import (
 )
 
 func TestFmap(t *testing.T) {
-	errV := errors.New("v")
-	suites := []struct {
-		name string
-		f    func(func(int) string, int, error) (string, error)
-	}{
-		{
-			name: "Fmap",
-			f: func(f func(int) string, v int, err error) (string, error) {
-				return baresult.Fmap(f)(v, err)
-			},
-		},
-		{
-			name: "EagerFmap",
-			f:    baresult.EagerFmap[int, string],
-		},
-	}
+	errTest := errors.New("test")
 	cases := []struct {
 		name        string
-		val         int
-		err         error
+		provide     func() (int, error)
 		expectedErr error
 		expectedVal string
 	}{
 		{
 			name:        "error",
-			val:         0,
-			err:         errV,
-			expectedErr: errV,
+			provide:     func() (int, error) { return 0, errTest },
+			expectedErr: errTest,
 		},
 		{
 			name:        "value",
-			val:         42,
-			err:         nil,
+			provide:     func() (int, error) { return 42, nil },
 			expectedErr: nil,
 			expectedVal: "42",
 		},
 	}
-	for _, ts := range suites {
-		ts := ts
-		t.Run(ts.name, func(t *testing.T) {
-			for _, tc := range cases {
-				tc := tc
-				t.Run(tc.name, func(t *testing.T) {
-					val, err := ts.f(
-						func(x int) string { return fmt.Sprint(x) },
-						tc.val,
-						tc.err,
-					)
-					if err != tc.expectedErr {
-						t.Fatalf("want %v, got %v", tc.expectedErr, err)
-					}
-					if tc.expectedErr == nil && val != tc.expectedVal {
-						t.Fatalf("want %q, got %q", tc.expectedVal, val)
-					}
-				})
+	f := func(x int) string { return fmt.Sprint(x) }
+	for _, tc := range cases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			val, err := baresult.Fmap(f)(tc.provide())
+			if err != tc.expectedErr {
+				t.Fatalf("want %v, got %v", tc.expectedErr, err)
+			}
+			if tc.expectedErr == nil && val != tc.expectedVal {
+				t.Fatalf("want %q, got %q", tc.expectedVal, val)
 			}
 		})
 	}

@@ -23,21 +23,6 @@ func TestKleisli(t *testing.T) {
 	gVal := func(s string) (string, error) {
 		return fmt.Sprintf("[%s]", s), nil
 	}
-	suites := []struct {
-		name string
-		f    func(func(int) (string, error), func(string) (string, error), int) (string, error)
-	}{
-		{
-			name: "Kleisli",
-			f: func(f func(int) (string, error), g func(string) (string, error), v int) (string, error) {
-				return baresult.Kleisli(f, g)(v)
-			},
-		},
-		{
-			name: "EagerKleisli",
-			f:    baresult.EagerKleisli[int, string, string],
-		},
-	}
 	cases := []struct {
 		name        string
 		f           func(int) (string, error)
@@ -73,20 +58,15 @@ func TestKleisli(t *testing.T) {
 			expectedVal: "[42]",
 		},
 	}
-	for _, ts := range suites {
-		ts := ts
-		t.Run(ts.name, func(t *testing.T) {
-			for _, tc := range cases {
-				tc := tc
-				t.Run(tc.name, func(t *testing.T) {
-					v, err := ts.f(tc.f, tc.g, tc.v)
-					if err != tc.expectedErr {
-						t.Fatalf("want %v, got %v", tc.expectedErr, err)
-					}
-					if tc.expectedErr == nil && v != tc.expectedVal {
-						t.Fatalf("want %q, got %q", tc.expectedVal, v)
-					}
-				})
+	for _, tc := range cases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+			v, err := baresult.Kleisli(tc.f, tc.g)(tc.v)
+			if err != tc.expectedErr {
+				t.Fatalf("want %v, got %v", tc.expectedErr, err)
+			}
+			if tc.expectedErr == nil && v != tc.expectedVal {
+				t.Fatalf("want %q, got %q", tc.expectedVal, v)
 			}
 		})
 	}
