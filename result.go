@@ -20,18 +20,6 @@
 //	apply :: R (a -> b) -> R a -> R b
 //	bind  :: (a -> R b) -> R a -> R b
 //
-// This package also offers two versions for each of those functions. The
-// regular versions `Fmap`, `Bind`, `Apply` take a single parameter and return
-// a function. They are curried implementations.
-// There are also corresponding uncurried implementations `EagerFmap`,
-// `EagerBind`, and `EagerApply`. As the names suggest, other than their curried
-// counterparts, they produce results immediately.
-// For now, the eager versions are implemented in terms of their curried
-// counterparts because the author somewhat suspects the 🪄 compiler 🪄 should be
-// able to elide the extra func objects.
-//
-// TODO(kdungs): Check whether the compiler elides extra funcs for eager versions.
-//
 // Additionally, this package also implements
 //
 //	kleisli :: (a -> R b) -> (b -> R c) -> a -> R c

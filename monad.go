@@ -12,10 +12,3 @@ func Bind[A any, B any](f func(A) R[B]) func(R[A]) R[B] {
 		return f(v)
 	}
 }
-
-// EagerBind is the uncurried, eager version of `Bind`.
-// This exist because it (can be optimized to) avoid(s) an extra func.
-// TODO(kdungs): Check whether the compiler actually elides the extra func.
-func EagerBind[A any, B any](f func(A) R[B], r R[A]) R[B] {
-	return Bind(f)(r)
-}

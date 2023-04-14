@@ -27,8 +27,6 @@ In addition, both packages also implement
  * `Kleisli` composition like [`(>=>) :: Monad m => (a -> m b) -> (b -> m c) -> a -> m c`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Control-Monad.html#v:-62--61--62-)
  * `ZipWith` like `zipWith :: (a -> b -> c) -> R a -> R b -> R c`
 
-For all of those functions, there's always the _default, lazy, curried_ and the _eager, uncurried_ version. The default versions all take a `func` and return another `func` which then acts on `R[T]`. This can be used to compose chains of functions and only actually execute them when a result is needed. E.g. `result.Fmap[A, B]` takes a `func(A) B` and returns a `func(result.R[A]) result.R[B]` while `result.EagerFmap[A, B]` takes both a `func(A) B` and a `result.R[A]` and immediately returns a `R[B]`.
-
 ### `result.R[T]`
 
  * `Of` which corresponds to [`return :: a -> m a`](https://hackage.haskell.org/package/base-4.18.0.0/docs/Control-Monad.html#v:return).
@@ -43,6 +41,7 @@ _TBD._
 
 ### Currying and Go
 _TBD: Some discussion around why we return functions and why we flipped the order of arguments for `Bind`._
+
 
 ## Alternatives considered
 
@@ -97,6 +96,10 @@ func (r rValue[T]) Or(_ T) T {
 The cool thing about this is that we'd never have to deal with default values (and pay for the cost of storing them) until an eventual call to `Unwrap` on an error.
 
 Honestly, this might be the better design! Originally I had defined the interface in terms of `Err() error` and `Val() T` and it was clumsy around `panic`ing for `Val()` on the error-holding struct. Also exporting an interface and hiding concrete types is [kind of considered an anti-pattern in Go](https://github.com/golang/go/wiki/CodeReviewComments#interfaces) which is why I chose the `R[T] struct` instead. But it might be worth revisiting this...
+
+### Eager versions of all functions
+All functions from both packages are _lazy and curried_. The original design included also _eager, uncurried_ versions. The default versions all take a `func` and return another `func` which then acts on `R[T]`. This can be used to compose chains of functions and only actually execute them when a result is needed. E.g. `result.Fmap[A, B]` takes a `func(A) B` and returns a `func(result.R[A]) result.R[B]` while `result.EagerFmap[A, B]` takes both a `func(A) B` and a `result.R[A]` and immediately returns a `R[B]`. [It turns out they were not actually useful](https://github.com/kdungs/go-result/issues/4#issuecomment-1509285018).
+
 
 ## Future work
 

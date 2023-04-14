@@ -20,10 +20,3 @@ func ZipWith[A any, B any, C any](f func(A, B) C) func(R[A]) func(R[B]) R[C] {
 		}
 	}
 }
-
-// EagerZipWith is the uncurried, eager version of `ZipWith`.
-// This exist because it (can be optimized to) avoid(s) an extra func.
-// TODO(kdungs): Check whether the compiler actually elides the extra func.
-func EagerZipWith[A any, B any, C any](f func(A, B) C, ra R[A], rb R[B]) R[C] {
-	return ZipWith(f)(ra)(rb)
-}
