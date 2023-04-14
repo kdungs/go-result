@@ -15,6 +15,7 @@ _Result types for Go; because `(T, error)` can be considered a ✨ monad ✨._
  * [ ] Implement `WrapFunc2..N` and `Lift2...N`.
  * [ ] Consider removing the `Eager` versions from `baresult`.
  * [ ] Add some meaningful examples.
+ * [ ] Maybe correct currying for `Kleisli` and `ZipWith`. This is more important for `baresult` than it is for `result`.
 
 ## Background 
 So... I was playing around with Rust. I'm not gonna lie: It's glorious. It reminded me of the good old Haskell days. Back then, I was inspired to implement a [check monad (aka Result, StatusOr, Either) for Python](https://github.com/kdungs/python-mcheck) and [Kleisli composition in C++](https://github.com/kdungs/cpp-kleisli-composition/). I thought to myself: Why not do something like this for Go? Purely as an experiment, of course. No sane Gopher would ever want to rid their code of all instances of
