@@ -23,13 +23,13 @@ func TestBind(t *testing.T) {
 		f    func(func(int) result.R[string], result.R[int]) result.R[string]
 	}{
 		{
-			name: "Apply",
+			name: "Bind",
 			f: func(f func(int) result.R[string], r result.R[int]) result.R[string] {
 				return result.Bind(f)(r)
 			},
 		},
 		{
-			name: "EagerApply",
+			name: "EagerBind",
 			f:    result.EagerBind[int, string],
 		},
 	}
