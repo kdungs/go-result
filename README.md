@@ -10,9 +10,11 @@ _Result types for Go; because `(T, error)` can be considered a ✨ monad ✨._
 
  * [x] Implement tests that use `*T`.
  * [ ] Verify that the compiler can elide/inline extra function calls for eager versions.
- * [ ] Implement `baresult`.
+ * [x] Implement `baresult`.
  * [ ] Re-consider interface-based approach for `R[T]`.
  * [ ] Implement `WrapFunc2..N` and `Lift2...N`.
+ * [ ] Consider removing the `Eager` versions from `baresult`.
+ * [ ] Add some meaningful examples.
 
 ## Background 
 So... I was playing around with Rust. I'm not gonna lie: It's glorious. It reminded me of the good old Haskell days. Back then, I was inspired to implement a [check monad (aka Result, StatusOr, Either) for Python](https://github.com/kdungs/python-mcheck) and [Kleisli composition in C++](https://github.com/kdungs/cpp-kleisli-composition/). I thought to myself: Why not do something like this for Go? Purely as an experiment, of course. No sane Gopher would ever want to rid their code of all instances of
@@ -46,6 +48,8 @@ For all of those functions, there's always the _default, lazy, curried_ and the 
 ### `baresult`
 
 _TBD._
+
+ * The `Eager` versions become a bit useless since we cannot e.g. do `EagerFmap(SomeFunc, SomeFuncThatReturnsValueAndError())` as the result of the second will not be unpacked. It does however work if the function call is the only parameter, e.g. `Fmap(SomeFunc)(SomeFuncThatReturnsValueAndError())`.
 
 ### Currying and Go
 _TBD: Some discussion around why we return functions and why we flipped the order of arguments for `Bind`._
