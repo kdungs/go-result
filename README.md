@@ -37,8 +37,6 @@ In addition, both packages also implement
 
 _TBD._
 
- * The `Eager` versions become a bit useless since we cannot e.g. do `EagerFmap(SomeFunc, SomeFuncThatReturnsValueAndError())` as the result of the second will not be unpacked. It does however work if the function call is the only parameter, e.g. `Fmap(SomeFunc)(SomeFuncThatReturnsValueAndError())`.
-
 ### Currying and Go
 _TBD: Some discussion around why we return functions and why we flipped the order of arguments for `Bind`._
 
