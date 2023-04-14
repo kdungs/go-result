@@ -22,7 +22,7 @@ func TestZipWith(t *testing.T) {
 				a result.R[int],
 				b result.R[string],
 			) result.R[string] {
-				return result.ZipWith(f)(a, b)
+				return result.ZipWith(f)(a)(b)
 			},
 		},
 		{

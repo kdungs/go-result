@@ -24,7 +24,7 @@ func TestZipWith(t *testing.T) {
 				b string,
 				errB error,
 			) (string, error) {
-				return baresult.ZipWith(f)(a, errA, b, errB)
+				return baresult.ZipWith(f)(a, errA)(b, errB)
 			},
 		},
 		{
