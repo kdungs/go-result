@@ -29,6 +29,28 @@ func FuzzWrapUnwrap(f *testing.F) {
 	})
 }
 
+func FuzzWrapUnwrapPointer(f *testing.F) {
+	f.Fuzz(func(t *testing.T, s string, isErr bool) {
+		var v string
+		var err error
+		if isErr {
+			v = s
+			err = nil
+		} else {
+			v = *new(string)
+			err = errors.New(s)
+		}
+		r := result.Wrap(&v, err)
+		uv, uerr := r.Unwrap()
+		if err != uerr {
+			t.Fatalf("want %v, got %v", err, uerr)
+		}
+		if err == nil && v != *uv {
+			t.Fatalf("want %q, got %q", v, *uv)
+		}
+	})
+}
+
 func FuzzOf(f *testing.F) {
 	f.Fuzz(func(t *testing.T, s string) {
 		r := result.Of(s)
@@ -38,6 +60,19 @@ func FuzzOf(f *testing.F) {
 		}
 		if v != s {
 			t.Fatalf("want %q, got %q", s, v)
+		}
+	})
+}
+
+func FuzzOfPointer(f *testing.F) {
+	f.Fuzz(func(t *testing.T, s string) {
+		r := result.Of(&s)
+		v, err := r.Unwrap()
+		if err != nil {
+			t.Fatalf("want no error, got %v", err)
+		}
+		if *v != s {
+			t.Fatalf("want %q, got %q", s, *v)
 		}
 	})
 }
@@ -70,5 +105,13 @@ func TestOr(t *testing.T) {
 				t.Fatalf("want %q, got %q", tc.expected, v)
 			}
 		})
+	}
+}
+
+func TestOfErrPointer(t *testing.T) {
+	errExample := errors.New("test")
+	r := result.OfErr[*int](errExample)
+	if _, err := r.Unwrap(); err != errExample {
+		t.Fatalf("want %v, got %v", errExample, err)
 	}
 }

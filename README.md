@@ -1,6 +1,6 @@
 # go-result
 
-_Result types for Go; because (T, error) can be considered a ✨ monad ✨._
+_Result types for Go; because `(T, error)` can be considered a ✨ monad ✨._
 
 > Your scientists were so preoccupied with whether or not they could that they didn't stop to think if they should!
 
@@ -8,7 +8,7 @@ _Result types for Go; because (T, error) can be considered a ✨ monad ✨._
 
 ## TODO
 
- * [ ] Implement tests that use `*T`.
+ * [x] Implement tests that use `*T`.
  * [ ] Verify that the compiler can elide/inline extra function calls for eager versions.
  * [ ] Implement `baresult`.
  * [ ] Re-consider interface-based approach for `R[T]`.
