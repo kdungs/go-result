@@ -62,7 +62,7 @@ However, the ergonomics would suffer a lot. All functions dealing with `R[T]` wo
 
 We also don't need to worry about defaukt values because, fortunately, cheap default values are a paradigm in Go and the `*new(T)` 🦎 idiom is kind of neat (shoutout to Mat Ryer and the GoTime podcast).
 
-## Interface `R[T]` with unexported implementations
+### Interface `R[T]` with unexported implementations
 Instead of a concrete type `R[T]`, we could define a generic interface
 
 ```go
