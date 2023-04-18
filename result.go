@@ -1,33 +1,11 @@
 // Package result defines a result type `R[T]` that encapsulates a value and an
-// error.
+// error as well as functions to work with `R[T]` conveniently.
+//
 // Other languages would call this `Either` (Haskell), `Result` (Rust),
 // `StatusOr` (C++/Abseil), or `expected` (C++23).
+//
 // On top of that, the package provides a number of functions that make working
-// with `R[T]` a bit more ergonomic. Since `R[T]` is a ✨ monad ✨ (and thus also
-// an applicative functor), functions like `Fmap` and `Bind` emerge trivially
-// and can be used to compose chains of function calls without repeated
-// `if err != nil ...`.
-//
-// Other than Haskell, this package defines `bind` (`>>=`) with the arguments
-// flipped to be consistent with the definitions of `fmap` and `apply` (`<*>`).
-// This is especially useful because Go doesn't have Haskell's facilities for
-// currying and function composition and it seems more ergonomic to be able to
-// "bind a function" (lift?) and then apply that to an `R[T]` rather than to
-// take an `R[T]` and return a function that accepts a function that then acts
-// on the value or error...
-//
-//	fmap  ::   (a -> b) -> R a -> R b
-//	apply :: R (a -> b) -> R a -> R b
-//	bind  :: (a -> R b) -> R a -> R b
-//
-// Additionally, this package also implements
-//
-//	kleisli :: (a -> R b) -> (b -> R c) -> a -> R c
-//	zipWith :: (a -> b -> c) -> R a -> R b -> R c
-//
-// This package also has a sister package `baresult` (bare result) which
-// implements all the monadic goodness directly on `(T, error)` without
-// introducing a wrapper type.
+// with `R[T]` a bit more ergonomic. Also, `R[T]` is a ✨ monad ✨, wow!
 package result
 
 // R is a generic result that can either hold a value of type T or an error.
@@ -59,8 +37,6 @@ func Wrap[T any](v T, err error) R[T] {
 }
 
 // Of constructs an `R[T]` from a value of type `T`.
-// In the context of R as a monad, this is equivalent to `return` or `pure` in
-// Haskell: return :: a -> m a.
 func Of[T any](v T) R[T] {
 	return Wrap(v, nil)
 }
