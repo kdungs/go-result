@@ -3,10 +3,11 @@ package result
 // Do applies `f` to the value contained in `r` if present or otherwise returns
 // the contained error.
 func Do[T any](r R[T], f func(T)) error {
-	v, err := r.Unwrap()
-	if err != nil {
-		return err
+	rerr, ok := r.(rErr[T])
+	if ok {
+		return rerr.err
 	}
+	v, _ := r.Unwrap()
 	f(v)
 	return nil
 }
@@ -14,24 +15,27 @@ func Do[T any](r R[T], f func(T)) error {
 // DoE applies `f` to the value contained in `r` if present and returns its
 // result. Otherwise returns the error contained in `r`.
 func DoE[T any](r R[T], f func(T) error) error {
-	v, err := r.Unwrap()
-	if err != nil {
-		return err
+	rerr, ok := r.(rErr[T])
+	if ok {
+		return rerr.err
 	}
+	v, _ := r.Unwrap()
 	return f(v)
 }
 
 // DoZip applies `f` to the values contained in `ra` and `rb` if both are
 // present. Otherwise returns the first error encountered (`ra` then `rb`).
 func DoZip[A, B any](ra R[A], rb R[B], f func(A, B)) error {
-	a, err := ra.Unwrap()
-	if err != nil {
-		return err
+	aerr, ok := ra.(rErr[A])
+	if ok {
+		return aerr.err
 	}
-	b, err := rb.Unwrap()
-	if err != nil {
-		return err
+	a, _ := ra.Unwrap()
+	berr, ok := rb.(rErr[B])
+	if ok {
+		return berr.err
 	}
+	b, _ := rb.Unwrap()
 	f(a, b)
 	return nil
 }
@@ -40,13 +44,15 @@ func DoZip[A, B any](ra R[A], rb R[B], f func(A, B)) error {
 // present and returns its result. Otherwise returns the first error
 // encountered (`ra` then `rb`).
 func DoZipE[A, B any](ra R[A], rb R[B], f func(A, B) error) error {
-	a, err := ra.Unwrap()
-	if err != nil {
-		return err
+	aerr, ok := ra.(rErr[A])
+	if ok {
+		return aerr.err
 	}
-	b, err := rb.Unwrap()
-	if err != nil {
-		return err
+	a, _ := ra.Unwrap()
+	berr, ok := rb.(rErr[B])
+	if ok {
+		return berr.err
 	}
+	b, _ := rb.Unwrap()
 	return f(a, b)
 }
