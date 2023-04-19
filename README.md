@@ -12,9 +12,12 @@ TIL there's actually an [ongoing discussion around how to improve error
 handling in Go
 2](https://go.googlesource.com/proposal/+/master/design/go2draft-error-handling.md).
 
-Why would this be useful?
-
-```go
+Why would this be useful? Take a look at [example_test.go](example_test.go).
 
 
-```
+## Caveats
+
+ - No shortcuts! If an error happens early on, all computations still happen in
+   the form of forwarding the error. With the current implementation this also
+   means constructing a few default values on the way.
+ - No story around `defer Cleanup()`, yet.
