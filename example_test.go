@@ -56,7 +56,7 @@ func writeCountsSorted(w io.Writer, cnts map[string]int) error {
 func Example() {
 	in := result.Wrap(fakeOpen())
 	// If we had an actual file, we'd call
-	//  defer result.DoE(in, func(f *os.File) error { f.Close() })
+	//  defer result.Do(in, func(f *os.File) { f.Close() })
 	// here.
 	dat := result.MapE(in, io.ReadAll)
 	cnt := result.Map(dat, func(bs []byte) map[string]int {
