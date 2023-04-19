@@ -38,26 +38,26 @@ func fakeCreate(buf *strings.Builder) (io.Writer, error) {
 	return buf, nil
 }
 
-func writeCountsSorted(w io.Writer, cnts map[string]int) (int, error) {
+func writeCountsSorted(w io.Writer, cnts map[string]int) error {
 	sortedWords := make([]string, 0, len(cnts))
 	for word, _ := range cnts {
 		sortedWords = append(sortedWords, word)
 	}
 	sort.Strings(sortedWords)
-	written := 0
 	for _, word := range sortedWords {
-		b, err := fmt.Fprintf(w, "%s: %d\n", word, cnts[word])
-		if err != nil {
-			return written, err
+		if _, err := fmt.Fprintf(w, "%s: %d\n", word, cnts[word]); err != nil {
+			return err
 		}
-		written += b
 	}
-	return written, nil
+	return nil
 }
 
 // Look ma, no `if err != nil`.
 func Example() {
 	in := result.Wrap(fakeOpen())
+	// If we had an actual file, we'd call
+	//  defer result.DoE(in, func(f *os.File) error { f.Close() })
+	// here.
 	dat := result.MapE(in, io.ReadAll)
 	cnt := result.Map(dat, func(bs []byte) map[string]int {
 		cnts := make(map[string]int)
@@ -68,8 +68,7 @@ func Example() {
 	})
 	var buf strings.Builder
 	of := result.Wrap(fakeCreate(&buf))
-	out := result.ZipE(of, cnt, writeCountsSorted)
-	if _, err := out.Unwrap(); err != nil {
+	if err := result.DoZipE(of, cnt, writeCountsSorted); err != nil {
 		log.Fatalf("%v", err)
 	}
 	fmt.Printf("%s", buf.String())
