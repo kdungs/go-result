@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/kdungs/go-result"
+	"github.com/kdungs/go-result/result"
 )
 
 func TestZip(t *testing.T) {

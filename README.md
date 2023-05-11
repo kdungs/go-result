@@ -1,28 +1,14 @@
-# go-result
+# Result types for Go
 
-_Result types for Go; because `(T, error)` can be considered a ✨ monad ✨._
+_Because `(T, error)` can be considered a ✨ monad ✨._
 
-> Your scientists were so preoccupied with whether or not they could that they
-> didn't stop to think if they should!
+> Your scientists were so preoccupied with whether or not they could that they didn't stop to think if they should!
 
-**Disclaimer**: This whole thing is purely for (mostly my personal) education.
-Don't try this ~~at home~~ in prod.
+Imagine Go code without `if err != nil`. Would this be sacrilege? You might think so. For me, it was a fun exercise to get to know Go generics. Don't try this ~~at home~~ in prod.
 
-TIL there's actually an [ongoing discussion around how to improve error
-handling in Go
-2](https://go.googlesource.com/proposal/+/master/design/go2draft-error-handling.md).
+The central idea is to treat `(T, error)` as a monad. There are two separate packages that implement this idea in different ways:
 
-Why would this be useful? Take a look at [example_test.go](example_test.go).
+1.  [`package result`](result/) exposes a dedicated type `R[T]` that wraps `(T, error)`. On top of that, it implements functions to perform computations on `R[T]`. Since Go does not have generic member functions, those are free functions.
+2.  [`package then`](then/) offers functionality to (lazily) compose functions that return `(T, error)`.
 
-
-## Caveats
-
- - No shortcuts! If an error happens early on, all computations still happen in
-   the form of forwarding the error. With the current implementation this also
-   means constructing a few default values on the way.
- - `defer Cleanup()` becomes a bit clunky, e.g.
-
-```go
-fh := result.Wrap(os.Open(fname))
-defer result.Do(fh, func(f *os.File) { f.Close() })
-```
+There's actually an [ongoing discussion around how to improve error handling in Go 2](https://go.googlesource.com/proposal/+/master/design/go2draft-error-handling.md).

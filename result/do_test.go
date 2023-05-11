@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/kdungs/go-result"
+	"github.com/kdungs/go-result/result"
 )
 
 var errV = errors.New("no value")

@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/kdungs/go-result"
+	"github.com/kdungs/go-result/result"
 )
 
 func fakeOpen() (io.Reader, error) {

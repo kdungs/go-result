@@ -4,7 +4,7 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/kdungs/go-result"
+	"github.com/kdungs/go-result/result"
 )
 
 func FuzzWrapUnwrap(f *testing.F) {
