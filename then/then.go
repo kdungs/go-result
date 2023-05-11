@@ -5,21 +5,23 @@
 // The major downside of this approach is that handling `defer`ed cleanup is not well supported.
 package then
 
-// FN is a result-producing function, the basic building block of this library.
-type FN[A, B any] func(A) (B, error)
+type (
+	// FN is a result-producing function, the basic building block of this library.
+	FN[A, B any] func(A) (B, error)
 
-/* There are only three other kinds of functions with which we want to compose.*/
+	/* There are only three other kinds of functions with which we want to compose.*/
 
-// F0 is a function that consumes a value of type A without returning an error.
-// This would usually by a function that modifies its argument or produces an error-free side effect (e.g. `fmt.Printf` but not `fmt.Fprintf`).
-type F0[A any] func(A)
+	// F0 is a function that consumes a value of type A without returning an error.
+	// This would usually by a function that modifies its argument or produces an error-free side effect (e.g. `fmt.Printf` but not `fmt.Fprintf`).
+	F0[A any] func(A)
 
-// FE is a function that consumes a value of type A and returns an error (or nil).
-// This would typically be a function that produces a side effect, e.g. writing to a file via `fmt.Fprintf`.
-type FE[A any] func(A) error
+	// FE is a function that consumes a value of type A and returns an error (or nil).
+	// This would typically be a function that produces a side effect, e.g. writing to a file via `fmt.Fprintf`.
+	FE[A any] func(A) error
 
-// F is an regular function from A to B.
-type F[A, B any] func(A) B
+	// F is an regular function from A to B.
+	F[A, B any] func(A) B
+)
 
 /*
 With the above definitions, these are the scenarios for composition:
